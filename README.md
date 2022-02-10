@@ -6,7 +6,7 @@ Why?
 
 To bypass this error:
 
-"Data too long to fit the audioclip: CLIP x sample(s) discarded"
+!x Data too long to fit the audioclip: CLIP x sample(s) discarded
 
 Usage:
 
