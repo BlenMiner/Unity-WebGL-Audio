@@ -21,3 +21,7 @@ m_audioClip.Stop();
 ```
 
 Notice how it doesn't use an AudioSource, this is because we use the AudioContext of the browser to play it.
+
+Known Issues:
+
+You have to manually stop the audio when changing scenes or destroying the clip otherwise it will just keep on playing.
