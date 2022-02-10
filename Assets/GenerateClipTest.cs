@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GenerateClipTest : MonoBehaviour
 {
+    public int clipGeneratedLengthInMin = 10;
+
     public int samplerate = 44100;
 
     public int frequency = 440;
@@ -26,13 +28,18 @@ public class GenerateClipTest : MonoBehaviour
 
     void GenerateSound()
     {
-        float[] samples = new float[samplerate * 2];
-        float normalizedTime = 0f;
+        float[] samples = new float[samplerate * clipGeneratedLengthInMin * 60];
 
         for (int i = 0; i < samples.Length; ++i)
         {
-            normalizedTime = (1f + (i / (float)samples.Length)) / 2f;
-            samples[i] = Mathf.Sin(2 * Mathf.PI * (frequency * normalizedTime) * i / samplerate);
+            float time = i / (float)samplerate;
+
+            float n0 = Mathf.Min(1f, Mathf.Abs(Mathf.PerlinNoise(time, 0f)));
+            float n1 = Mathf.Min(1f, Mathf.Abs(Mathf.PerlinNoise(time * 2, time)));
+
+            float f = (frequency * n0 * n1);
+
+            samples[i] = Mathf.Sin(2 * Mathf.PI * f + i / samplerate);
         }
 
         clip.SetData(samples);
@@ -40,15 +47,15 @@ public class GenerateClipTest : MonoBehaviour
 
     void Update()
     {
+        if (clip.IsPlaying)
+            time += Time.deltaTime;
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (time > 2f)
+            if (time > clip.Length)
             {
                 paused = false;
-                
-                if (clip.IsPlaying)
-                    clip.Stop();
-
+                clip.Stop();
                 time = 0f;
             }
             else paused = !paused;
@@ -56,8 +63,5 @@ public class GenerateClipTest : MonoBehaviour
             if (paused) clip.Stop();
             else clip.Play(time);
         }
-
-        if (!paused)
-            time += Time.deltaTime;
     }
 }

@@ -13,6 +13,8 @@ public class WebAudioClip : IDisposable
 
     public bool IsPlaying => m_isPlaying;
 
+    public float Length {get; private set;} = 0;
+
 #if UNITY_EDITOR
     AudioSource m_unitySource;
 
@@ -47,6 +49,7 @@ public class WebAudioClip : IDisposable
 
     public void SetData(float[] data, int offsetSamples = 0)
     {
+        Length = ((float)data.Length / m_frequency) / m_channelCount;
 #if UNITY_EDITOR
         m_unityClip = AudioClip.Create("TMP", data.Length, m_channelCount, m_frequency, false);
         m_unityClip.SetData(data, offsetSamples);
